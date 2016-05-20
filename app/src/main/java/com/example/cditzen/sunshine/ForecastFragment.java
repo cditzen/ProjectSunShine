@@ -79,6 +79,7 @@ public class ForecastFragment extends Fragment {
         listView.setAdapter(mForecastAdapter);
 
         return rootView;
+
     }
 
     public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
