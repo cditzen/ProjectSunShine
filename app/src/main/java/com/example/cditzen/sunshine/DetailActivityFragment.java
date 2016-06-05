@@ -28,8 +28,6 @@ public class DetailActivityFragment extends Fragment {
 
         Log.v("DetailActivityFragment", "In onCreateView");
 
-        TextView detailText = (TextView) rootView.findViewById(R.id.detail_Text);
-
         if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)){
             String forecastString = intent.getStringExtra(Intent.EXTRA_TEXT);
             TextView textView = (TextView) rootView.findViewById(R.id.detail_Text);
