@@ -1,5 +1,6 @@
 package com.example.cditzen.sunshine;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -64,7 +66,7 @@ public class ForecastFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 
         FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
-        fetchWeatherTask.execute("94043,us");
+        fetchWeatherTask.execute("50501,us");
 
         mForecastAdapter =
                 new ArrayAdapter<String>(
@@ -78,8 +80,20 @@ public class ForecastFragment extends Fragment {
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
         listView.setAdapter(mForecastAdapter);
 
-        return rootView;
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                String forecast = mForecastAdapter.getItem(position);
+//                Toast.makeText(getActivity(), forecast, Toast.LENGTH_SHORT).show();
 
+                Intent intent = new Intent(getActivity(), DetailActivity.class)
+                        .putExtra(Intent.EXTRA_TEXT, forecast);
+                startActivity(intent);
+
+            }
+        });
+
+        return rootView;
     }
 
     public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
@@ -95,8 +109,7 @@ public class ForecastFragment extends Fragment {
             long roundedHigh = Math.round(high);
             long roundedLow = Math.round(low);
 
-            String highLowStr = roundedHigh + "/" + roundedLow;
-            return highLowStr;
+            return roundedHigh + "/" + roundedLow;
         }
 
         private String[] getWeatherDataFromJSON(String forecastJsonStr, int numDays) throws JSONException{
@@ -121,6 +134,7 @@ public class ForecastFragment extends Fragment {
             dayTime = new Time();
 
             String[] resultStrs = new String[numDays];
+
             for (int i = 0; i < weatherArray.length(); i++){
                 String day;
                 String description;
@@ -150,6 +164,8 @@ public class ForecastFragment extends Fragment {
         @Override
         protected String[] doInBackground(String... params){
 
+            Log.v("doInBackground", "Do In Background began");
+
             if(params.length == 0){
                 return null;
             }
@@ -175,7 +191,7 @@ public class ForecastFragment extends Fragment {
                 final String APPID_PARAM = "APPID";
 
                 Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
-                        .appendQueryParameter(QUERY_PARAM, params[0])
+                        .appendQueryParameter(QUERY_PARAM, "50501,us")
                         .appendQueryParameter(FORMAT_PARAM, format)
                         .appendQueryParameter(UNITS_PARAM, unit)
                         .appendQueryParameter(DAYS_PARAM, Integer.toString(numDays))
